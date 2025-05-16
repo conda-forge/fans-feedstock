@@ -23,11 +23,11 @@ build:
         # - rm -rf build
         # - mkdir build
         # - cd build
-        - cmake --preset gcc-release
+        - cmake --preset gcc-release $CMAKE_ARGS -DCMAKE_C_COMPILER=$PREFIX/bin/mpicc -DCMAKE_CXX_COMPILER=$PREFIX/bin/mpicxx
         - cmake --build --preset gcc-release
         # - cmake .. $CMAKE_ARGS -DCMAKE_C_COMPILER=$PREFIX/bin/mpicc -DCMAKE_CXX_COMPILER=$PREFIX/bin/mpicxx
         # - cmake --build . -j
-        - cmake --install .
+        - cmake --install build/gcc-release
     - if: osx
       then:
         # - rm -rf build
@@ -35,9 +35,9 @@ build:
         # - cd build
         # - cmake .. $CMAKE_ARGS -DCMAKE_C_COMPILER=$PREFIX/bin/mpicc -DCMAKE_CXX_COMPILER=$PREFIX/bin/mpicxx
         # - cmake --build . -j
-        - cmake --preset clang-release-macos
+        - cmake --preset clang-release-macos $CMAKE_ARGS -DCMAKE_C_COMPILER=$PREFIX/bin/mpicc -DCMAKE_CXX_COMPILER=$PREFIX/bin/mpicxx
         - cmake --build --preset clang-release-macos
-        - cmake --install .
+        - cmake --install build/clang-release-macos
 
 requirements:
   build:
