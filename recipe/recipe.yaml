@@ -10,21 +10,33 @@ source:
   # sha256: 1573478d9acd27a9cfc126a4167ce3951ec26e9896bf19577b44cbc4bdc48b88
   # patches:
   #   - fix_gitignore_ms.patch  # modify so gitignore does not include the sphere32.h5 file
-  git: https://github.com/DataAnalyticsEngineering/FANS.git
-  branch: develop
+  git: https://github.com/claudiushaag/FANS.git
+  branch: compiling
 
 build:
   number: 2
   skip:
     - win
   script:
-    - if: unix
+    - if: linux
       then:
-        - rm -rf build
-        - mkdir build
-        - cd build
-        - cmake .. $CMAKE_ARGS -DCMAKE_C_COMPILER=$PREFIX/bin/mpicc -DCMAKE_CXX_COMPILER=$PREFIX/bin/mpicxx
-        - cmake --build . -j
+        # - rm -rf build
+        # - mkdir build
+        # - cd build
+        - cmake --preset gcc-release
+        - cmake --build --preset gcc-release
+        # - cmake .. $CMAKE_ARGS -DCMAKE_C_COMPILER=$PREFIX/bin/mpicc -DCMAKE_CXX_COMPILER=$PREFIX/bin/mpicxx
+        # - cmake --build . -j
+        - cmake --install .
+    - if: osx
+      then:
+        # - rm -rf build
+        # - mkdir build
+        # - cd build
+        # - cmake .. $CMAKE_ARGS -DCMAKE_C_COMPILER=$PREFIX/bin/mpicc -DCMAKE_CXX_COMPILER=$PREFIX/bin/mpicxx
+        # - cmake --build . -j
+        - cmake --preset clang-release-macos
+        - cmake --build --preset clang-release-macos
         - cmake --install .
 
 requirements:
