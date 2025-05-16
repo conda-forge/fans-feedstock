@@ -62,7 +62,7 @@ tests:
       - MODIFIED_JSON_FILE="$PREFIX/etc/conda/test-files/$PKG_NAME/0/test/input_files/test_LinearElastic_mod.json"
       - NEW_MS_FILENAME="$PREFIX/etc/conda/test-files/$PKG_NAME/0/test/microstructures/sphere32.h5"
     # Use jq to create a modified copy of the JSON file
-      - jq --arg new_filename "$NEW_MS_FILENAME" '.ms_filename = $new_filename' "$JSON_FILE" > "$MODIFIED_JSON_FILE"
+      - jq --arg new_filename "$NEW_MS_FILENAME" '.microstructure.filepath = $new_filename' "$JSON_FILE" > "$MODIFIED_JSON_FILE"
     # Run tests
       - mpiexec -n 2 FANS "$MODIFIED_JSON_FILE" "$PREFIX/etc/conda/test-files/$PKG_NAME/0//test/test_results.h5"
     requirements:
