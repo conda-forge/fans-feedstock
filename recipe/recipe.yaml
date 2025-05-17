@@ -6,25 +6,38 @@ package:
   version: ${{ version }}
 
 source:
-  url: https://github.com/DataAnalyticsEngineering/FANS/archive/refs/tags/v${{ version }}.tar.gz
-  sha256: 1573478d9acd27a9cfc126a4167ce3951ec26e9896bf19577b44cbc4bdc48b88
-  patches:
-    - fix_gitignore_ms.patch  # modify so gitignore does not include the sphere32.h5 file
+  # url: https://github.com/DataAnalyticsEngineering/FANS/archive/refs/tags/v${{ version }}.tar.gz
+  # sha256: 1573478d9acd27a9cfc126a4167ce3951ec26e9896bf19577b44cbc4bdc48b88
+  # patches:
+  #   - fix_gitignore_ms.patch  # modify so gitignore does not include the sphere32.h5 file
+  git: https://github.com/claudiushaag/FANS.git
+  branch: compiling
 
 build:
-  number: 1
+  number: 2
   skip:
     - win
-    - osx
   script:
     - if: linux
       then:
-        - rm -rf build
-        - mkdir build
-        - cd build
-        - cmake .. $CMAKE_ARGS -DCMAKE_C_COMPILER=$PREFIX/bin/mpicc -DCMAKE_CXX_COMPILER=$PREFIX/bin/mpicxx
-        - cmake --build . -j
-        - cmake --install .
+        # - rm -rf build
+        # - mkdir build
+        # - cd build
+        - cmake --preset gcc-release $CMAKE_ARGS -DCMAKE_C_COMPILER=$PREFIX/bin/mpicc -DCMAKE_CXX_COMPILER=$PREFIX/bin/mpicxx
+        - cmake --build --preset gcc-release
+        # - cmake .. $CMAKE_ARGS -DCMAKE_C_COMPILER=$PREFIX/bin/mpicc -DCMAKE_CXX_COMPILER=$PREFIX/bin/mpicxx
+        # - cmake --build . -j
+        - cmake --install build/gcc-release
+    - if: osx
+      then:
+        # - rm -rf build
+        # - mkdir build
+        # - cd build
+        # - cmake .. $CMAKE_ARGS -DCMAKE_C_COMPILER=$PREFIX/bin/mpicc -DCMAKE_CXX_COMPILER=$PREFIX/bin/mpicxx
+        # - cmake --build . -j
+        - cmake --preset clang-release-macos $CMAKE_ARGS -DCMAKE_C_COMPILER=$PREFIX/bin/mpicc -DCMAKE_CXX_COMPILER=$PREFIX/bin/mpicxx
+        - cmake --build --preset clang-release-macos
+        - cmake --install build/clang-release-macos
 
 requirements:
   build:
@@ -45,13 +58,16 @@ tests:
       bin:
         - FANS
   - script:
-      - JSON_FILE="$PREFIX/etc/conda/test-files/$PKG_NAME/0/test/input_files/test_LinearElastic.json"
-      - MODIFIED_JSON_FILE="$PREFIX/etc/conda/test-files/$PKG_NAME/0/test/input_files/test_LinearElastic_mod.json"
+      # - JSON_FILE="$PREFIX/etc/conda/test-files/$PKG_NAME/0/test/input_files/test_LinearElastic.json"
+      # - MODIFIED_JSON_FILE="$PREFIX/etc/conda/test-files/$PKG_NAME/0/test/input_files/test_LinearElastic_mod.json"
+      - JSON_FILE="$PREFIX/etc/conda/test-files/$PKG_NAME/0/test/input_files/test_PseudoPlastic.json"
+      - MODIFIED_JSON_FILE="$PREFIX/etc/conda/test-files/$PKG_NAME/0/test/input_files/test_test_PseudoPlastic_mod.json"
       - NEW_MS_FILENAME="$PREFIX/etc/conda/test-files/$PKG_NAME/0/test/microstructures/sphere32.h5"
     # Use jq to create a modified copy of the JSON file
-      - jq --arg new_filename "$NEW_MS_FILENAME" '.ms_filename = $new_filename' "$JSON_FILE" > "$MODIFIED_JSON_FILE"
+      - jq --arg new_filename "$NEW_MS_FILENAME" '.microstructure.filepath = $new_filename' "$JSON_FILE" > "$MODIFIED_JSON_FILE"
     # Run tests
-      - mpiexec -n 2 FANS "$MODIFIED_JSON_FILE" "$PREFIX/etc/conda/test-files/$PKG_NAME/0//test/test_results.h5"
+      # - mpiexec -n 2 FANS "$MODIFIED_JSON_FILE" "$PREFIX/etc/conda/test-files/$PKG_NAME/0//test/test_results.h5"
+      - FANS "$MODIFIED_JSON_FILE" "$PREFIX/etc/conda/test-files/$PKG_NAME/0//test/test_results.h5"
     requirements:
       run:
         - jq
