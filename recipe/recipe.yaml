@@ -20,32 +20,20 @@ build:
   script:
     - if: linux
       then:
-        # - rm -rf build
-        # - mkdir build
-        # - cd build
         - cmake --preset gcc-release $CMAKE_ARGS
         - cmake --build --preset gcc-release
-        # - cmake .. $CMAKE_ARGS -DCMAKE_C_COMPILER=$PREFIX/bin/mpicc -DCMAKE_CXX_COMPILER=$PREFIX/bin/mpicxx
-        # - cmake --build . -j
         - cmake --install build/gcc-release
-    - if: osx and not arm64
+    - if: osx
       then:
-        # - rm -rf build
-        # - mkdir build
-        # - cd build
-        # - cmake .. $CMAKE_ARGS -DCMAKE_C_COMPILER=$PREFIX/bin/mpicc -DCMAKE_CXX_COMPILER=$PREFIX/bin/mpicxx
-        # - cmake --build . -j
-        - cmake --preset clang-release-macos $CMAKE_ARGS
-        - cmake --build --preset clang-release-macos
-        - cmake --install build/clang-release-macos
-    - if: osx and arm64
-      then:
-        - export OMPI_CC=$CC
-        - export OMPI_CXX=$CXX
-        - export OMPI_FC=$FC
-        - export OPAL_PREFIX="$PREFIX"
-        - export FFLAGS="${FFLAGS} -DAVOID_MPI_IN_PLACE"
-        - export LDFLAGS="${LDFLAGS} -headerpad_max_install_names"
+        - if: (build_platform != target_platform)
+          then:
+            # flags from https://conda-forge.org/docs/maintainer/knowledge_base/#cross-compilation and https://github.com/conda-forge/mumps-feedstock/blob/966474677d28486ef897b0d3bb2c10558dc9b5ca/recipe/build-mumps.sh
+            - export OMPI_CC=$CC
+            - export OMPI_CXX=$CXX
+            - export OMPI_FC=$FC
+            - export OPAL_PREFIX="$PREFIX"
+            - export FFLAGS="${FFLAGS} -DAVOID_MPI_IN_PLACE"
+            - export LDFLAGS="${LDFLAGS} -headerpad_max_install_names"
         - cmake --preset clang-release-macos $CMAKE_ARGS
         - cmake --build --preset clang-release-macos
         - cmake --install build/clang-release-macos
@@ -72,16 +60,14 @@ tests:
       bin:
         - FANS
   - script:
+      # JSON test file has relative path to h5 included - changing that
       - JSON_FILE="$PREFIX/etc/conda/test-files/$PKG_NAME/0/test/input_files/test_LinearElastic.json"
       - MODIFIED_JSON_FILE="$PREFIX/etc/conda/test-files/$PKG_NAME/0/test/input_files/test_LinearElastic_mod.json"
-      # - JSON_FILE="$PREFIX/etc/conda/test-files/$PKG_NAME/0/test/input_files/test_PseudoPlastic.json"
-      # - MODIFIED_JSON_FILE="$PREFIX/etc/conda/test-files/$PKG_NAME/0/test/input_files/test_test_PseudoPlastic_mod.json"
       - NEW_MS_FILENAME="$PREFIX/etc/conda/test-files/$PKG_NAME/0/test/microstructures/sphere32.h5"
-    # Use jq to create a modified copy of the JSON file
+      # Use jq to create a modified copy of the JSON file
       - jq --arg new_filename "$NEW_MS_FILENAME" '.microstructure.filepath = $new_filename' "$JSON_FILE" > "$MODIFIED_JSON_FILE"
-    # Run tests
+      # Run tests
       - mpiexec -n 2 FANS "$MODIFIED_JSON_FILE" "$PREFIX/etc/conda/test-files/$PKG_NAME/0//test/test_results.h5"
-      # - FANS "$MODIFIED_JSON_FILE" "$PREFIX/etc/conda/test-files/$PKG_NAME/0//test/test_results.h5"
     requirements:
       run:
         - jq
