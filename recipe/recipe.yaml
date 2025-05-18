@@ -28,14 +28,23 @@ build:
         # - cmake .. $CMAKE_ARGS -DCMAKE_C_COMPILER=$PREFIX/bin/mpicc -DCMAKE_CXX_COMPILER=$PREFIX/bin/mpicxx
         # - cmake --build . -j
         - cmake --install build/gcc-release
-    - if: osx
+    - if: osx_64
       then:
         # - rm -rf build
         # - mkdir build
         # - cd build
         # - cmake .. $CMAKE_ARGS -DCMAKE_C_COMPILER=$PREFIX/bin/mpicc -DCMAKE_CXX_COMPILER=$PREFIX/bin/mpicxx
         # - cmake --build . -j
+        - if [[ "$CONDA_BUILD_CROSS_COMPILATION" == "1" ]]; then
+            export OPAL_PREFIX="$PREFIX"
+          fi
         - cmake --preset clang-release-macos $CMAKE_ARGS -DCMAKE_C_COMPILER=$PREFIX/bin/mpicc -DCMAKE_CXX_COMPILER=$PREFIX/bin/mpicxx
+        - cmake --build --preset clang-release-macos
+        - cmake --install build/clang-release-macos
+    - if: osx_arm64
+      then:
+        - export OPAL_PREFIX="$PREFIX"
+        - cmake --preset clang-release-macos $CMAKE_ARGS
         - cmake --build --preset clang-release-macos
         - cmake --install build/clang-release-macos
 
@@ -47,6 +56,9 @@ requirements:
     - cmake
     - make
     - ninja
+    - if: osx_arm64
+      then:
+        - openmpi-mpicxx
   host:
     - hdf5 * mpi_openmpi*
     - fftw * mpi_openmpi*
