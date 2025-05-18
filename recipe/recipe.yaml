@@ -23,7 +23,7 @@ build:
         # - rm -rf build
         # - mkdir build
         # - cd build
-        - cmake --preset gcc-release $CMAKE_ARGS -DCMAKE_C_COMPILER=$PREFIX/bin/mpicc -DCMAKE_CXX_COMPILER=$PREFIX/bin/mpicxx
+        - cmake --preset gcc-release $CMAKE_ARGS
         - cmake --build --preset gcc-release
         # - cmake .. $CMAKE_ARGS -DCMAKE_C_COMPILER=$PREFIX/bin/mpicc -DCMAKE_CXX_COMPILER=$PREFIX/bin/mpicxx
         # - cmake --build . -j
@@ -35,12 +35,17 @@ build:
         # - cd build
         # - cmake .. $CMAKE_ARGS -DCMAKE_C_COMPILER=$PREFIX/bin/mpicc -DCMAKE_CXX_COMPILER=$PREFIX/bin/mpicxx
         # - cmake --build . -j
-        - cmake --preset clang-release-macos $CMAKE_ARGS -DCMAKE_C_COMPILER=$PREFIX/bin/mpicc -DCMAKE_CXX_COMPILER=$PREFIX/bin/mpicxx
+        - cmake --preset clang-release-macos $CMAKE_ARGS
         - cmake --build --preset clang-release-macos
         - cmake --install build/clang-release-macos
     - if: osx and arm64
       then:
+        - export OMPI_CC=$CC
+        - export OMPI_CXX=$CXX
+        - export OMPI_FC=$FC
         - export OPAL_PREFIX="$PREFIX"
+        - export FFLAGS="${FFLAGS} -DAVOID_MPI_IN_PLACE"
+        - export LDFLAGS="${LDFLAGS} -headerpad_max_install_names"
         - cmake --preset clang-release-macos $CMAKE_ARGS
         - cmake --build --preset clang-release-macos
         - cmake --install build/clang-release-macos
