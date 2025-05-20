@@ -10,8 +10,10 @@ source:
   # sha256: 1573478d9acd27a9cfc126a4167ce3951ec26e9896bf19577b44cbc4bdc48b88
   # patches:
   #   - fix_gitignore_ms.patch  # modify so gitignore does not include the sphere32.h5 file
-  git: https://github.com/DataAnalyticsEngineering/FANS.git
-  branch: develop
+  # git: https://github.com/DataAnalyticsEngineering/FANS.git
+  # branch: develop
+  git: https://github.com/claudiushaag/FANS.git
+  rev: ca4fe860989991e6cc8e8b2f767ee7a4de880681
 
 build:
   number: 2
