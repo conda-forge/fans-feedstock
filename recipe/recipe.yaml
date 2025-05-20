@@ -31,9 +31,11 @@ build:
             - export OPAL_PREFIX="$PREFIX"
             - export FFLAGS="${FFLAGS} -DAVOID_MPI_IN_PLACE"
             - export LDFLAGS="${LDFLAGS} -headerpad_max_install_names"
-        - cmake $CMAKE_ARGS
-        - cmake --build
-        - cmake --install build
+        - mkdir build
+        - cd build
+        - cmake .. $CMAKE_ARGS
+        - cmake --build . -j
+        - cmake --install .
 
 requirements:
   build:
