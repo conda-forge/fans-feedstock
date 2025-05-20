@@ -20,12 +20,7 @@ build:
   skip:
     - win
   script:
-    - if: linux
-      then:
-        - cmake --preset gcc-release $CMAKE_ARGS
-        - cmake --build --preset gcc-release
-        - cmake --install build
-    - if: osx
+    - if: unix
       then:
         - if: (build_platform != target_platform)
           then:
@@ -36,8 +31,8 @@ build:
             - export OPAL_PREFIX="$PREFIX"
             - export FFLAGS="${FFLAGS} -DAVOID_MPI_IN_PLACE"
             - export LDFLAGS="${LDFLAGS} -headerpad_max_install_names"
-        - cmake --preset clang-release-macos $CMAKE_ARGS
-        - cmake --build --preset clang-release-macos
+        - cmake $CMAKE_ARGS
+        - cmake --build
         - cmake --install build
 
 requirements:
