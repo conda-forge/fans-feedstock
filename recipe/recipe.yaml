@@ -13,7 +13,7 @@ source:
   # git: https://github.com/DataAnalyticsEngineering/FANS.git
   # branch: develop
   git: https://github.com/claudiushaag/FANS.git
-  rev: ca4fe860989991e6cc8e8b2f767ee7a4de880681
+  rev: 06de07f115210242b479c31f4ef3197469be9a27
 
 build:
   number: 2
