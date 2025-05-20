@@ -22,7 +22,7 @@ build:
       then:
         - cmake --preset gcc-release $CMAKE_ARGS
         - cmake --build --preset gcc-release
-        - cmake --install build/gcc-release
+        - cmake --install build
     - if: osx
       then:
         - if: (build_platform != target_platform)
@@ -36,7 +36,7 @@ build:
             - export LDFLAGS="${LDFLAGS} -headerpad_max_install_names"
         - cmake --preset clang-release-macos $CMAKE_ARGS
         - cmake --build --preset clang-release-macos
-        - cmake --install build/clang-release-macos
+        - cmake --install build
 
 requirements:
   build:
