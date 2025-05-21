@@ -8,6 +8,8 @@ package:
 source:
   url: https://github.com/DataAnalyticsEngineering/FANS/archive/refs/tags/v${{ version }}.tar.gz
   sha256: 8d6f5c3bee726bc40b62ae5888a6afde0a3e7861805be4ee6a087fbb79d51f58
+  git: https://github.com/DataAnalyticsEngineering/FANS.git
+  branch: clang-bug-fix
 
 build:
   number: 0
