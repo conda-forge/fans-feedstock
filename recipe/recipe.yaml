@@ -69,6 +69,8 @@ tests:
     files:
       source:
         - test/
+  - script:
+      - FANS --version
 
 about:
   homepage: https://github.com/DataAnalyticsEngineering/FANS
