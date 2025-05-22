@@ -9,8 +9,8 @@ Package license: LGPL-3.0-only
 
 Summary: FANS: an open-source, efficient, and parallel FFT-based homogenization solver designed to solve microscale multiphysics problems.
 
-Fourier Accelerated Nodal Solvers (FANS) is an FFT-based homogenization solver designed to handle microscale multiphysics problems.
-This repository contains a C++ implementation of FANS, built using CMake and MPI for parallel computations.
+Fourier-Accelerated Nodal Solver (FANS) is an FFT-based homogenization solver for microscale multiphysics problems.
+FANS is written in C++, built using CMake, and it has MPI parallelization.
 
 Current build status
 ====================
