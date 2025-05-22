@@ -1,5 +1,5 @@
 context:
-  version: "0.3.0"
+  version: "0.4.1"
 
 package:
   name: fans
@@ -7,22 +7,27 @@ package:
 
 source:
   url: https://github.com/DataAnalyticsEngineering/FANS/archive/refs/tags/v${{ version }}.tar.gz
-  sha256: 1573478d9acd27a9cfc126a4167ce3951ec26e9896bf19577b44cbc4bdc48b88
-  patches:
-    - fix_gitignore_ms.patch  # modify so gitignore does not include the sphere32.h5 file
+  sha256: 2ce1d08bbe9dbe1d02e94f03d8d0cbbffa57b2e2a6d2a147b1829cb49782f0c4
 
 build:
-  number: 1
+  number: 0
   skip:
     - win
-    - osx
   script:
-    - if: linux
+    - if: unix
       then:
-        - rm -rf build
+        - if: (build_platform != target_platform)
+          then:
+            # flags from https://conda-forge.org/docs/maintainer/knowledge_base/#cross-compilation and https://github.com/conda-forge/mumps-feedstock/blob/966474677d28486ef897b0d3bb2c10558dc9b5ca/recipe/build-mumps.sh
+            - export OMPI_CC=$CC
+            - export OMPI_CXX=$CXX
+            - export OMPI_FC=$FC
+            - export OPAL_PREFIX="$PREFIX"
+            - export FFLAGS="${FFLAGS} -DAVOID_MPI_IN_PLACE"
+            - export LDFLAGS="${LDFLAGS} -headerpad_max_install_names"
         - mkdir build
         - cd build
-        - cmake .. $CMAKE_ARGS -DCMAKE_C_COMPILER=$PREFIX/bin/mpicc -DCMAKE_CXX_COMPILER=$PREFIX/bin/mpicxx
+        - cmake .. $CMAKE_ARGS
         - cmake --build . -j
         - cmake --install .
 
@@ -34,6 +39,9 @@ requirements:
     - cmake
     - make
     - ninja
+    - if: (build_platform != target_platform)
+      then:
+        - openmpi-mpicxx
   host:
     - hdf5 * mpi_openmpi*
     - fftw * mpi_openmpi*
@@ -45,12 +53,13 @@ tests:
       bin:
         - FANS
   - script:
+      # JSON test file has relative path to h5 included - changing that
       - JSON_FILE="$PREFIX/etc/conda/test-files/$PKG_NAME/0/test/input_files/test_LinearElastic.json"
       - MODIFIED_JSON_FILE="$PREFIX/etc/conda/test-files/$PKG_NAME/0/test/input_files/test_LinearElastic_mod.json"
       - NEW_MS_FILENAME="$PREFIX/etc/conda/test-files/$PKG_NAME/0/test/microstructures/sphere32.h5"
-    # Use jq to create a modified copy of the JSON file
-      - jq --arg new_filename "$NEW_MS_FILENAME" '.ms_filename = $new_filename' "$JSON_FILE" > "$MODIFIED_JSON_FILE"
-    # Run tests
+      # Use jq to create a modified copy of the JSON file
+      - jq --arg new_filename "$NEW_MS_FILENAME" '.microstructure.filepath = $new_filename' "$JSON_FILE" > "$MODIFIED_JSON_FILE"
+      # Run tests
       - mpiexec -n 2 FANS "$MODIFIED_JSON_FILE" "$PREFIX/etc/conda/test-files/$PKG_NAME/0//test/test_results.h5"
     requirements:
       run:
@@ -58,13 +67,15 @@ tests:
     files:
       source:
         - test/
+  - script:
+      - FANS --version
 
 about:
   homepage: https://github.com/DataAnalyticsEngineering/FANS
   summary: "FANS: an open-source, efficient, and parallel FFT-based homogenization solver designed to solve microscale multiphysics problems."
   description: |
-    Fourier Accelerated Nodal Solvers (FANS) is an FFT-based homogenization solver designed to handle microscale multiphysics problems.
-    This repository contains a C++ implementation of FANS, built using CMake and MPI for parallel computations.
+    Fourier-Accelerated Nodal Solver (FANS) is an FFT-based homogenization solver for microscale multiphysics problems.
+    FANS is written in C++, built using CMake, and it has MPI parallelization.
   license: LGPL-3.0-only
   license_family: LGPL
   license_file: LICENSE
