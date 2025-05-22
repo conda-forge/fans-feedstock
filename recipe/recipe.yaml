@@ -1,15 +1,13 @@
 context:
-  version: "0.4.0"
+  version: "0.4.1"
 
 package:
   name: fans
   version: ${{ version }}
 
 source:
-  # url: https://github.com/DataAnalyticsEngineering/FANS/archive/refs/tags/v${{ version }}.tar.gz
-  # sha256: 8d6f5c3bee726bc40b62ae5888a6afde0a3e7861805be4ee6a087fbb79d51f58
-  git: https://github.com/DataAnalyticsEngineering/FANS.git
-  branch: develop
+  url: https://github.com/DataAnalyticsEngineering/FANS/archive/refs/tags/v${{ version }}.tar.gz
+  sha256: 2ce1d08bbe9dbe1d02e94f03d8d0cbbffa57b2e2a6d2a147b1829cb49782f0c4
 
 build:
   number: 0
