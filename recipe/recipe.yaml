@@ -43,7 +43,7 @@ requirements:
       then:
         - openmpi-mpicxx
   host:
-    - hdf5 == 1.14.2* mpi_openmpi*
+    - hdf5 == 1.14.2*mpi_openmpi*
     - fftw * mpi_openmpi*
     - openmpi-mpicxx
     - eigen
