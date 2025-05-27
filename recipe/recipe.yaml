@@ -10,7 +10,7 @@ source:
   sha256: 2ce1d08bbe9dbe1d02e94f03d8d0cbbffa57b2e2a6d2a147b1829cb49782f0c4
 
 build:
-  number: 0
+  number: 1
   skip:
     - win
   script:
@@ -43,7 +43,7 @@ requirements:
       then:
         - openmpi-mpicxx
   host:
-    - hdf5 * mpi_openmpi*
+    - hdf5 == 1.14.2* mpi_openmpi*
     - fftw * mpi_openmpi*
     - openmpi-mpicxx
     - eigen
