@@ -43,10 +43,11 @@ requirements:
       then:
         - openmpi-mpicxx
   host:
-    - hdf5 ==1.14.2 mpi_openmpi*
+    - hdf5 * mpi_openmpi*
     - fftw * mpi_openmpi*
     - openmpi-mpicxx
     - eigen
+    - zlib <1.3.0
 
 tests:
   - package_contents:
