@@ -30,6 +30,9 @@ build:
         - cmake .. $CMAKE_ARGS
         - cmake --build . -j
         - cmake --install .
+        - cmake .. $CMAKE_ARGS -DFANS_LIBRARY_FOR_MICRO_MANAGER=ON
+        - cmake --build . -j
+        - cmake --install .
 
 requirements:
   build:
@@ -39,6 +42,7 @@ requirements:
     - cmake
     - make
     - ninja
+    - pybind11
     - if: (build_platform != target_platform)
       then:
         - openmpi-mpicxx
