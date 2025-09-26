@@ -10,7 +10,7 @@ source:
   sha256: 9F076F4F7A4DF7808A2532BAE1ED8CE3CEBBD18D8313095A1050A595C74F2B5A
 
 build:
-  number: 1
+  number: 2
   skip:
     - win
   script:
@@ -48,6 +48,7 @@ requirements:
     - fftw * mpi_openmpi*
     - openmpi-mpicxx
     - eigen
+    - nlohmann_json
 
 tests:
   - package_contents:
