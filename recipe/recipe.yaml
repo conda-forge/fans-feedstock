@@ -1,5 +1,5 @@
 context:
-  version: "0.4.2"
+  version: "0.4.3"
 
 package:
   name: fans
@@ -7,10 +7,10 @@ package:
 
 source:
   url: https://github.com/DataAnalyticsEngineering/FANS/archive/refs/tags/v${{ version }}.tar.gz
-  sha256: 9F076F4F7A4DF7808A2532BAE1ED8CE3CEBBD18D8313095A1050A595C74F2B5A
+  sha256: a23e6f902614edc6318db906a87916b6fe71f9a672461865fcbcd221bc4299ff
 
 build:
-  number: 2
+  number: 0
   skip:
     - win
   script:
