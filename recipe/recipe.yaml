@@ -25,6 +25,11 @@ build:
             - export OPAL_PREFIX="$PREFIX"
             - export FFLAGS="${FFLAGS} -DAVOID_MPI_IN_PLACE"
             - export LDFLAGS="${LDFLAGS} -headerpad_max_install_names"
+            - |
+              # Filter out host-only CPU flags
+              for var in CFLAGS CXXFLAGS DEBUG_CFLAGS DEBUG_CXXFLAGS; do
+                eval "export $var=\"\$(echo \${$var} | sed -E 's/(^| )-march=nocona( |$)//g; s/(^| )-mtune=haswell( |$)//g')\""
+              done
         - mkdir build
         - cd build
         - cmake .. $CMAKE_ARGS -DFANS_LIBRARY_FOR_MICRO_MANAGER=ON
