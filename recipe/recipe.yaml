@@ -26,9 +26,17 @@ build:
             - export FFLAGS="${FFLAGS} -DAVOID_MPI_IN_PLACE"
             - export LDFLAGS="${LDFLAGS} -headerpad_max_install_names"
             - |
-              # Filter out host-only CPU flags
+              # Filter out host-only CPU flags safely
               for var in CFLAGS CXXFLAGS DEBUG_CFLAGS DEBUG_CXXFLAGS; do
-                eval "export $var=\"\$(echo \${$var} | sed -E 's/(^| )-march=nocona( |$)//g; s/(^| )-mtune=haswell( |$)//g')\""
+                val="${!var}"
+                # Remove -march=nocona and -mtune=haswell as whole tokens
+                val="$(echo "$val" | sed -E 's/(^|[[:space:]])-march=nocona([[:space:]]|$)/ /g; s/(^|[[:space:]])-mtune=haswell([[:space:]]|$)/ /g')"
+                # Normalize spacing (trim and collapse multiple spaces)
+                val="$(echo "$val" | tr -s ' ' | sed -E 's/^ //; s/ $//')"
+                export "$var=$val"
+              done
+              for var in CFLAGS CXXFLAGS DEBUG_CFLAGS DEBUG_CXXFLAGS; do
+                echo "$var cleaned: '${!var}'"
               done
         - mkdir build
         - cd build
