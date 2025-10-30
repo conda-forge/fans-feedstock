@@ -10,7 +10,7 @@ source:
   sha256: add4c59ae94dc310f860d1341eb79dea1f870cfd7cb0dd984df9e10f4a314181
 
 build:
-  number: 0
+  number: 1
   skip:
     - win
   script:
@@ -25,6 +25,19 @@ build:
             - export OPAL_PREFIX="$PREFIX"
             - export FFLAGS="${FFLAGS} -DAVOID_MPI_IN_PLACE"
             - export LDFLAGS="${LDFLAGS} -headerpad_max_install_names"
+            - |
+              # Filter out host-only CPU flags safely
+              for var in CFLAGS CXXFLAGS DEBUG_CFLAGS DEBUG_CXXFLAGS; do
+                val="${!var}"
+                # Remove -march=nocona and -mtune=haswell as whole tokens
+                val="$(echo "$val" | sed -E 's/(^|[[:space:]])-march=nocona([[:space:]]|$)/ /g; s/(^|[[:space:]])-mtune=haswell([[:space:]]|$)/ /g')"
+                # Normalize spacing (trim and collapse multiple spaces)
+                val="$(echo "$val" | tr -s ' ' | sed -E 's/^ //; s/ $//')"
+                export "$var=$val"
+              done
+              for var in CFLAGS CXXFLAGS DEBUG_CFLAGS DEBUG_CXXFLAGS; do
+                echo "$var cleaned: '${!var}'"
+              done
         - mkdir build
         - cd build
         - cmake .. $CMAKE_ARGS -DFANS_LIBRARY_FOR_MICRO_MANAGER=ON
