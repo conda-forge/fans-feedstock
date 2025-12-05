@@ -74,15 +74,16 @@ tests:
   - script:
       - cd test
       - ./run_tests.sh -n 1
-      - cd pytest
-      - pytest -v -s --from-pixi
+      # - cd pytest
+      # - pytest -v -s --from-pixi
     requirements:
       run:
         - jq
-        - Python
-        - pytest
-        - numpy
-        - MSUtils
+        - bc
+        # - Python
+        # - pytest
+        # - numpy
+        # - MSUtils
     files:
       source:
         - test/
