@@ -42,7 +42,8 @@ build:
               done
         - mkdir build
         - cd build
-        - cmake .. $CMAKE_ARGS -DFANS_LIBRARY_FOR_MICRO_MANAGER=ON
+        # FANS_LIBRARY_FOR_MICRO_MANAGER=OFF because the syumlink in test creates problems under conda: https://github.com/DataAnalyticsEngineering/FANS/issues/121
+        - cmake .. $CMAKE_ARGS -DFANS_LIBRARY_FOR_MICRO_MANAGER=OFF
         - cmake --build . -j
         - cmake --install .
 
