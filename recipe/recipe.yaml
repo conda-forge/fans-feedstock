@@ -8,9 +8,11 @@ package:
 source:
   url: https://github.com/DataAnalyticsEngineering/FANS/archive/refs/tags/v${{ version }}.tar.gz
   sha256: 7dc154337b29f0d3b66eee49c6bde3dc291cb06d49a0bbf554546f16ebf201f5
+  patches:
+    - remove_test_symlink.patch # because conda install makes problems with symlink: https://github.com/DataAnalyticsEngineering/FANS/issues/121
 
 build:
-  number: 0
+  number: 1
   skip:
     - win
   script:
@@ -40,7 +42,8 @@ build:
               done
         - mkdir build
         - cd build
-        - cmake .. $CMAKE_ARGS -DFANS_LIBRARY_FOR_MICRO_MANAGER=ON
+        # FANS_LIBRARY_FOR_MICRO_MANAGER=OFF because the syumlink in test creates problems under conda: https://github.com/DataAnalyticsEngineering/FANS/issues/121
+        - cmake .. $CMAKE_ARGS -DFANS_LIBRARY_FOR_MICRO_MANAGER=OFF
         - cmake --build . -j
         - cmake --install .
 

@@ -1,0 +1,19 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 85a7736..b1f5336 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -127,14 +127,6 @@ elseif (CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64")
+ endif ()
+ 
+ add_executable(FANS_main)
+-add_custom_command(
+-        TARGET FANS_main
+-        POST_BUILD
+-        COMMAND ${CMAKE_COMMAND} -E create_symlink
+-        $<TARGET_FILE:FANS_main>
+-        ${CMAKE_CURRENT_SOURCE_DIR}/test/$<TARGET_FILE_NAME:FANS_main>
+-        COMMENT "Create a symlink for FANS executable to ${CMAKE_CURRENT_SOURCE_DIR}/test/"
+-)
+ 
+ if (FANS_LIBRARY_FOR_MICRO_MANAGER)
+     add_subdirectory(pyfans)
