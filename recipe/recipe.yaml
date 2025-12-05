@@ -8,9 +8,11 @@ package:
 source:
   url: https://github.com/DataAnalyticsEngineering/FANS/archive/refs/tags/v${{ version }}.tar.gz
   sha256: 7dc154337b29f0d3b66eee49c6bde3dc291cb06d49a0bbf554546f16ebf201f5
+  patches:
+    - remove_test_symlink.patch # because conda install makes problems with symlink: https://github.com/DataAnalyticsEngineering/FANS/issues/121
 
 build:
-  number: 0
+  number: 1
   skip:
     - win
   script:
@@ -70,17 +72,17 @@ tests:
       lib:
         - FANS
   - script:
-      # JSON test file has relative path to h5 included - changing that
-      - JSON_FILE="$PREFIX/etc/conda/test-files/$PKG_NAME/0/test/input_files/test_LinearElastic.json"
-      - MODIFIED_JSON_FILE="$PREFIX/etc/conda/test-files/$PKG_NAME/0/test/input_files/test_LinearElastic_mod.json"
-      - NEW_MS_FILENAME="$PREFIX/etc/conda/test-files/$PKG_NAME/0/test/microstructures/sphere32.h5"
-      # Use jq to create a modified copy of the JSON file
-      - jq --arg new_filename "$NEW_MS_FILENAME" '.microstructure.filepath = $new_filename' "$JSON_FILE" > "$MODIFIED_JSON_FILE"
-      # Run tests
-      - mpiexec -n 1 FANS "$MODIFIED_JSON_FILE" "$PREFIX/etc/conda/test-files/$PKG_NAME/0//test/test_results.h5"
+      - cd test
+      - ./run_tests.sh -n 1
+      - cd pytest
+      - pytest -v -s --from-pixi
     requirements:
       run:
         - jq
+        - Python
+        - pytest
+        - numpy
+        - MSUtils
     files:
       source:
         - test/
