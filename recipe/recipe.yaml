@@ -58,6 +58,7 @@ requirements:
         - openmpi-mpicxx
   host:
     - hdf5 * mpi_openmpi*
+    - zlib
     - fftw * mpi_openmpi*
     - openmpi-mpicxx
     - eigen
