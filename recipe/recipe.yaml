@@ -1,5 +1,5 @@
 context:
-  version: "0.6.2"
+  version: "0.7.0"
 
 package:
   name: fans
@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://github.com/DataAnalyticsEngineering/FANS/archive/refs/tags/v${{ version }}.tar.gz
-  sha256: 7cef56fef10350259cfc5f1b462a124bbc925b9f738be09352996ea92d6a6a89
+  sha256: 085e1a330125d05b890be4067eab16f22420e35370f2a12c886c9d7c8f089dd3
 
 build:
   number: 1
@@ -62,6 +62,7 @@ requirements:
     - openmpi-mpicxx
     - eigen
     - nlohmann_json
+    - spdlog
 
 tests:
   - package_contents:
