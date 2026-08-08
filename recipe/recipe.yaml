@@ -25,6 +25,9 @@ build:
             - export OPAL_PREFIX="$PREFIX"
             - export FFLAGS="${FFLAGS} -DAVOID_MPI_IN_PLACE"
             - export LDFLAGS="${LDFLAGS} -headerpad_max_install_names"
+            # cross-python wraps `python` to report the target's EXT_SUFFIX but
+            # leaves `pythonX.Y` alone, and FindPython picks the latter.
+            - export CMAKE_ARGS="${CMAKE_ARGS} -DPython_EXECUTABLE=${BUILD_PREFIX}/bin/python"
             - |
               # Filter out host-only CPU flags safely
               for var in CFLAGS CXXFLAGS DEBUG_CFLAGS DEBUG_CXXFLAGS; do
