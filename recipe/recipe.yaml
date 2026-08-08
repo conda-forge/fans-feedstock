@@ -52,17 +52,25 @@ requirements:
     - cmake
     - make
     - ninja
-    - pybind11
     - if: (build_platform != target_platform)
       then:
         - openmpi-mpicxx
+        - python
+        - cross-python_${{ target_platform }}
   host:
-    - hdf5 * mpi_openmpi*
+    - python
+    - pybind11
+    # Pinned to 1.14 deliberately: unpinned resolves to hdf5 2.1, and every
+    # conda-forge fenics-dolfinx pins 1.14, so PyFANS could not share an
+    # environment with the Micro Manager's macro side.
+    - hdf5 >=1.14,<2 mpi_openmpi*
     - fftw * mpi_openmpi*
     - openmpi-mpicxx
     - eigen
     - nlohmann_json
     - spdlog
+  run:
+    - python
 
 tests:
   - package_contents:
@@ -70,6 +78,8 @@ tests:
         - FANS
       lib:
         - FANS
+      files:
+        - lib/python*/site-packages/PyFANS*.so
   - script:
       # JSON test file has relative path to h5 included - changing that
       - JSON_FILE="$PREFIX/etc/conda/test-files/$PKG_NAME/0/test/input_files/test_LinearElastic.json"
@@ -87,6 +97,10 @@ tests:
         - test/
   - script:
       - FANS --version
+  # Must stay last: the test above hardcodes its test-files index.
+  - python:
+      imports:
+        - PyFANS
 
 about:
   homepage: https://github.com/DataAnalyticsEngineering/FANS
@@ -94,7 +108,8 @@ about:
   description: |
     Fourier-Accelerated Nodal Solver (FANS) is an FFT-based homogenization solver for microscale multiphysics problems.
     FANS is written in C++, built using CMake, and it has MPI parallelization.
-    The package exposes the binary FANS and the Python-bindings via libFANS.
+    The package exposes the FANS binary, the libFANS library, and the PyFANS
+    Python bindings used by the preCICE Micro Manager.
   license: LGPL-3.0-only
   license_family: LGPL
   license_file: LICENSE
